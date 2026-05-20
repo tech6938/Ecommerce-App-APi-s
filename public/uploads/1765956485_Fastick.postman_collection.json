@@ -1,0 +1,518 @@
+{
+	"info": {
+		"_postman_id": "be8109ed-2fba-439d-a941-76581d4f2b54",
+		"name": "Fastick",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45190003",
+		"_collection_link": "https://code-debugger-team-4286.postman.co/workspace/Code-Debugger-Team-Workspace~01cc9cff-4e7b-4fef-ae33-9b8f5ad25aef/collection/45190003-be8109ed-2fba-439d-a941-76581d4f2b54?action=share&source=collection_link&creator=45190003"
+	},
+	"item": [
+		{
+			"name": "Address",
+			"item": [
+				{
+					"name": "Add Address",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_id",
+									"value": "49",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Ahmad Hassan",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "030000000",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "FSD",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "Other",
+									"type": "text"
+								},
+								{
+									"key": "house_no",
+									"value": "000",
+									"type": "text"
+								},
+								{
+									"key": "landmark",
+									"value": "oko",
+									"type": "text"
+								},
+								{
+									"key": "lat",
+									"value": "12.7801672",
+									"type": "text"
+								},
+								{
+									"key": "lng",
+									"value": "78.71772709999999",
+									"type": "text"
+								},
+								{
+									"key": "street",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "PAK",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{fastic_base_url}}add_address",
+							"host": [
+								"{{fastic_base_url}}add_address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Address",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_id",
+									"value": "49",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{fastic_base_url}}get_address",
+							"host": [
+								"{{fastic_base_url}}get_address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Address",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_id",
+									"value": "49",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Ahmad Hassan",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "030000000",
+									"type": "text"
+								},
+								{
+									"key": "city",
+									"value": "FSD",
+									"type": "text"
+								},
+								{
+									"key": "type",
+									"value": "Other",
+									"type": "text"
+								},
+								{
+									"key": "house_no",
+									"value": "000",
+									"type": "text"
+								},
+								{
+									"key": "landmark",
+									"value": "oko",
+									"type": "text"
+								},
+								{
+									"key": "lat",
+									"value": "12.7801672",
+									"type": "text"
+								},
+								{
+									"key": "lng",
+									"value": "78.71772709999999",
+									"type": "text"
+								},
+								{
+									"key": "street",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "country",
+									"value": "PAK",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{fastic_base_url}}update_address",
+							"host": [
+								"{{fastic_base_url}}update_address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Address",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "25",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{fastic_base_url}}delete_address",
+							"host": [
+								"{{fastic_base_url}}delete_address"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "phone",
+									"value": "03086737914",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "1234",
+									"type": "text"
+								},
+								{
+									"key": "fcm_id",
+									"value": "askjdhk-sakjdkjg",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "otp",
+									"value": "1234",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{fastic_base_url}}register",
+							"host": [
+								"{{fastic_base_url}}register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_id",
+									"value": "49",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "chenabmarket",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{fastic_base_url}}get_profile",
+							"host": [
+								"{{fastic_base_url}}get_profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "user_id",
+									"value": "49",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "Ahmad",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "ahmad@gmail.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{fastic_base_url}}update_profile",
+							"host": [
+								"{{fastic_base_url}}update_profile"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "All Categories",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "user_id",
+							"value": "49",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "Ahmad",
+							"type": "text"
+						},
+						{
+							"key": "email",
+							"value": "ahmad@gmail.com",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{fastic_base_url}}get_all_categories",
+					"host": [
+						"{{fastic_base_url}}get_all_categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Resturents",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "category_id",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "lat",
+							"value": "12.7801672",
+							"type": "text"
+						},
+						{
+							"key": "lng",
+							"value": "78.71772709999999",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{fastic_base_url}}get_restaurants",
+					"host": [
+						"{{fastic_base_url}}get_restaurants"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Restaurant products",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "store_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{fastic_base_url}}get_restaurant_products",
+					"host": [
+						"{{fastic_base_url}}get_restaurant_products"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

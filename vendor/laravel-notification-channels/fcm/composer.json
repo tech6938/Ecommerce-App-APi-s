@@ -1,0 +1,42 @@
+{
+    "name": "laravel-notification-channels/fcm",
+    "description": "FCM (Firebase Cloud Messaging) Notifications Driver for Laravel",
+    "homepage": "https://github.com/laravel-notification-channels/fcm",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chris Bautista",
+            "email": "chris.bautista@coreproc.ph",
+            "homepage": "https://coreproc.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "guzzlehttp/guzzle": "^7.0",
+        "illuminate/notifications": "^12.0",
+        "illuminate/support": "^12.0",
+        "kreait/laravel-firebase": "^6.0"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.25",
+        "mockery/mockery": "^1.6.0",
+        "phpunit/phpunit": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "NotificationChannels\\Fcm\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NotificationChannels\\Fcm\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

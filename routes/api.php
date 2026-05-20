@@ -1,0 +1,73 @@
+<?php
+
+
+use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\api\OtpController;
+use App\Http\Controllers\api\PasswordResetController;
+use App\Http\Controllers\api\ProductController;
+use App\Http\Controllers\api\RatingController;
+use App\Http\Controllers\api\SMSController;
+use App\Http\Controllers\api\UploadController;
+use Illuminate\Support\Facades\Route;
+
+// SMS OTP routes
+Route::controller(SMSController::class)->group(function () {
+    Route::post('/send-otp',  'sendOtp')->name('send-otp');
+    Route::post('/verify-otp',  'verifyOtp')->name('verify-otp');
+});
+
+// Email OTP routes
+Route::controller(OtpController::class)->group(function () {
+    Route::post('/send-verification-otp', 'sendVerificationOtp');
+    Route::post('/verify-otp', 'verifyOtp');
+    Route::post('/resend-otp', 'resendOtp');
+});
+
+
+// Password reset routes (public)
+Route::post('/password/reset-link', [PasswordResetController::class, 'sendResetLink']);
+Route::post('/password/reset', [PasswordResetController::class, 'resetPassword']);
+
+Route::controller(AuthController::class)->group(function () {
+    Route::post('/register', 'register');
+    Route::post('/login', 'login');
+    Route::post('/guest-login', 'guestLoginOrUpdate');
+    Route::post('/phone-login', 'loginWithPhone');
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::controller(AuthController::class)->group(function () {
+        Route::post('/logout', 'logout');
+        Route::post('/convert-guest', 'convertGuestToRegistered');
+        Route::post('/fcm_token', 'fcm_token');
+        Route::get('/profile', 'getProfile');
+        Route::post('/update/profile', 'updateProfile');
+    });
+
+    //
+    Route::controller(ProductController::class)->group(function () {
+        Route::get('/banners', 'banners');
+        Route::get('/categories', 'categories');
+        Route::get('/products', 'products');
+        Route::get('/products/liked', 'likedProducts');
+        Route::get('/products/search', 'autocomplete');
+        Route::get('/liked-products/search', 'autocompleteLikedProducts');
+        Route::get('/products/{id}', 'productDetails');
+        Route::post('/products/{id}/like', 'toggleLike');
+        Route::get('/recent-viewed-products', 'recentViewdProducts');
+        Route::get('/products-by-category', 'productsByCategory');
+    });
+
+    Route::controller(RatingController::class)->group(function () {
+        Route::post('/rating/add', 'addOrUpdateRating');
+        Route::delete('/rating/delete/{id}', 'deleteRating');
+        Route::get('/my-ratings', 'myRatings');
+
+        // Rating details (public, but for single rating)
+        Route::get('/rating/{id}', 'showRating');
+        Route::get('/products/{productId}/ratings', 'productRatings');
+    });
+
+    Route::post('/upload', [UploadController::class, 'upload']);
+    Route::get('/upload/list', [UploadController::class, 'list']);
+});
