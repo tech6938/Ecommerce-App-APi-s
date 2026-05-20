@@ -19,7 +19,7 @@ class ProductController extends Controller
     /**
      * banners list
      */
-    public function banners()
+    public function banners(Request $request)
     {
         $banners = Banner::where('status', 'active')->get();
         return response()->json([
@@ -45,21 +45,34 @@ class ProductController extends Controller
     /**
      * products list
      */
-    public function products()
+    public function products(Request $request)
     {
         $userId = auth()->id();
+
+        $limit = $request->get('limit', 20);
+        $page = $request->get('page', 1);
 
         $products = Product::where('status', 'active')
             ->withAvg('ratings', 'rating')
             ->withCount(['ratings', 'likes'])
             ->with(['userLike' => fn($query) => $query->where('user_id', $userId)])
             ->latest()
-            ->get();
+            ->paginate($limit, ['*'], 'page', $page);
 
         return response()->json([
             'success' => true,
             'message' => 'Products retrieved successfully',
-            'data' => ProductResource::collection($products)
+            'data' => [
+                'products' => ProductResource::collection($products),
+                'pagination' => [
+                    'current_page' => $products->currentPage(),
+                    'last_page' => $products->lastPage(),
+                    'per_page' => $products->perPage(),
+                    'total' => $products->total(),
+                    'next_page_url' => $products->nextPageUrl(),
+                    'prev_page_url' => $products->previousPageUrl(),
+                ]
+            ]
         ]);
     }
 
@@ -351,7 +364,7 @@ class ProductController extends Controller
             ->with('category')
             ->limit(10)
             ->get(['id', 'title', 'brand', 'thumbnail', 'price', 'discount_price']);
-            // return $products;
+        // return $products;
 
         return response()->json([
             'success' => true,
@@ -371,6 +384,43 @@ class ProductController extends Controller
                     ];
                 })
             ]
+        ]);
+    }
+
+    /**
+     * Get all categories with product stats and latest products
+     */
+    public function categoriesWithStats(Request $request)
+    {
+        $categories = Category::where('status', 'active')
+            ->withCount('products')
+            ->with(['products' => function ($query) {
+                $query->where('status', 'active')
+                    ->latest()
+                    ->limit(6);
+            }])
+            ->get();
+
+        $result = $categories->map(function ($category) {
+            $avgRating = Product::where('category_id', $category->id)
+                ->where('status', 'active')
+                ->join('ratings', 'products.id', '=', 'ratings.product_id')
+                ->avg('ratings.rating');
+
+            return [
+                'id' => $category->id,
+                'name' => $category->title,
+                'image' => $category->image ? url($category->image) : null,
+                'product_count' => $category->products_count,
+                'average_rating' => $avgRating ? round($avgRating, 1) : 0,
+                'latest_products' => ProductResource::collection($category->products),
+            ];
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Categories retrieved successfully',
+            'data' => $result,
         ]);
     }
 }

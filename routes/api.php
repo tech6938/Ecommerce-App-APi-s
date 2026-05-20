@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\api\AuthController;
+use App\Http\Controllers\api\CartController;
 use App\Http\Controllers\api\OtpController;
 use App\Http\Controllers\api\PasswordResetController;
 use App\Http\Controllers\api\ProductController;
@@ -56,6 +57,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/products/{id}/like', 'toggleLike');
         Route::get('/recent-viewed-products', 'recentViewdProducts');
         Route::get('/products-by-category', 'productsByCategory');
+        Route::get('/category/products', 'categoriesWithStats');
+    });
+
+    Route::controller(CartController::class)->group(function () {
+        Route::get('/cart', 'index');
+        Route::get('/count', 'count');
+        Route::post('/add', 'add');
+        Route::delete('/clear', 'clear');
+
+        Route::prefix('items/{cartItemId}')->group(function () {
+            Route::post('/', 'update');
+            Route::post('/increase', 'increase');
+            Route::post('/decrease', 'decrease');
+            Route::delete('/remove', 'remove');
+        });
     });
 
     Route::controller(RatingController::class)->group(function () {
