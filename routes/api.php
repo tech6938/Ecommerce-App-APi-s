@@ -6,6 +6,7 @@ use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\CartController;
 use App\Http\Controllers\api\OtpController;
 use App\Http\Controllers\api\PasswordResetController;
+use App\Http\Controllers\api\PaymentMethodController;
 use App\Http\Controllers\api\ProductController;
 use App\Http\Controllers\api\RatingController;
 use App\Http\Controllers\api\SMSController;
@@ -48,8 +49,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //
     Route::controller(ProductController::class)->group(function () {
+        // banners
         Route::get('/banners', 'banners');
+        // categories
         Route::get('/categories', 'categories');
+        // products
         Route::get('/products', 'products');
         Route::get('/products/liked', 'likedProducts');
         Route::get('/products/search', 'autocomplete');
@@ -59,6 +63,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/recent-viewed-products', 'recentViewdProducts');
         Route::get('/products-by-category', 'productsByCategory');
         Route::get('/category/products', 'categoriesWithStats');
+        // Coupons
+        Route::get('/coupons', 'couponsList');
+        Route::get('/coupons/search', 'autocompleteCoupons');
+        // COD Charges
+        Route::get('/cod-charges', 'codCharges');
     });
 
     Route::controller(CartController::class)->group(function () {
@@ -82,7 +91,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', 'show');
         Route::post('/{id}', 'update');
         Route::delete('/{id}', 'destroy');
-
         // Custom routes
         Route::get('/default/show', 'getDefault');
         Route::post('/{id}/default', 'setDefault');
@@ -96,6 +104,14 @@ Route::middleware('auth:sanctum')->group(function () {
         // Rating details (public, but for single rating)
         Route::get('/rating/{id}', 'showRating');
         Route::get('/products/{productId}/ratings', 'productRatings');
+    });
+
+    Route::prefix('payment-methods')->group(function () {
+        Route::get('/', [PaymentMethodController::class, 'index']);
+        Route::get('/cod', [PaymentMethodController::class, 'getCOD']);
+        Route::get('/online', [PaymentMethodController::class, 'getOnlineMethods']);
+        Route::get('/{code}', [PaymentMethodController::class, 'show']);
+        Route::get('/{code}/credentials', [PaymentMethodController::class, 'getCredentials']);
     });
 
     Route::post('/upload', [UploadController::class, 'upload']);

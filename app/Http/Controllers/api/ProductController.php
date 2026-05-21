@@ -7,6 +7,8 @@ use App\Http\Resources\ProductDetailsResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Banner;
 use App\Models\Category;
+use App\Models\CodCharge;
+use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\ProductLike;
 use App\Models\RecentlyViewed;
@@ -421,6 +423,102 @@ class ProductController extends Controller
             'success' => true,
             'message' => 'Categories retrieved successfully',
             'data' => $result,
+        ]);
+    }
+
+    /**
+     * Get all active coupons list
+     */
+    public function couponsList(Request $request)
+    {
+        $limit = $request->get('limit', 20);
+        $page = $request->get('page', 1);
+
+        $coupons = Coupon::where('status', 'active')
+            ->latest()
+            ->paginate($limit, ['*'], 'page', $page);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Coupons retrieved successfully',
+            'data' => [
+                'coupons' => $coupons->items(),
+                'pagination' => [
+                    'current_page' => $coupons->currentPage(),
+                    'last_page' => $coupons->lastPage(),
+                    'per_page' => $coupons->perPage(),
+                    'total' => $coupons->total(),
+                    'next_page_url' => $coupons->nextPageUrl(),
+                    'prev_page_url' => $coupons->previousPageUrl(),
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * Autocomplete search for coupons
+     */
+    public function autocompleteCoupons(Request $request)
+    {
+        $request->validate([
+            'q' => 'required|string|min:1',
+            'limit' => 'nullable|integer|min:1|max:50'
+        ]);
+
+        $searchTerm = $request->q;
+        $limit = $request->get('limit', 10);
+
+        $coupons = Coupon::where('status', 'active')
+            ->where(function ($query) use ($searchTerm) {
+                $query->where('title', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('code', 'LIKE', "%{$searchTerm}%")
+                    ->orWhere('description', 'LIKE', "%{$searchTerm}%")
+                    ->orWhereHas('category', function ($q) use ($searchTerm) {
+                        $q->where('title', 'LIKE', "%{$searchTerm}%");
+                    });
+            })
+            ->with('category')
+            ->limit($limit)
+            ->get(['id', 'title', 'code', 'description', 'type', 'amount', 'percentage', 'start_from', 'end_on', 'category_id']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Coupon search results',
+            'data' => [
+                'search_term' => $searchTerm,
+                'total_results' => $coupons->count(),
+                'coupons' => $coupons->map(function ($coupon) {
+                    return [
+                        'id' => $coupon->id,
+                        'title' => $coupon->title,
+                        'code' => $coupon->code,
+                        'description' => $coupon->description,
+                        'type' => $coupon->type,
+                        'amount' => $coupon->type == 'fixed' ? (float) $coupon->amount : null,
+                        'percentage' => $coupon->type == 'percentage' ? (float) $coupon->percentage : null,
+                        'start_from' => $coupon->start_from,
+                        'end_on' => $coupon->end_on,
+                        'is_valid' => $coupon->start_from <= now()->toDateString() && $coupon->end_on >= now()->toDateString(),
+                        'category' => $coupon->category ? $coupon->category->title : null,
+                    ];
+                })
+            ]
+        ]);
+    }
+
+    /**
+     * Get all active coupons list
+     */
+    public function codCharges(Request $request)
+    {
+
+        $codCharges = CodCharge::where('is_active', 1)
+            ->latest()->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'COD charges retrieved successfully',
+            'data' => $codCharges
         ]);
     }
 }

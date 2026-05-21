@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CategoryAttributeController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CodChargeController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\ProductController;
@@ -21,88 +23,103 @@ use Illuminate\Support\Facades\Route;
 // dash
 Route::middleware([AuthMiddleware::class])->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
-//system setting
-Route::get('/system-setting', [SystemSettingController::class, 'index'])->name('system.setting');
-Route::post('/system-setting/update', [SystemSettingController::class, 'update'])->name('system.setting.update');
+    //system setting
+    Route::get('/system-setting', [SystemSettingController::class, 'index'])->name('system.setting');
+    Route::post('/system-setting/update', [SystemSettingController::class, 'update'])->name('system.setting.update');
 
-Route::resource('banner', BannerController::class);
-Route::get(
-    'banner-status/{id}',
-    [BannerController::class, 'changeStatus']
-)->name('banner.status');
+    Route::resource('banner', BannerController::class);
+    Route::get(
+        'banner-status/{id}',
+        [BannerController::class, 'changeStatus']
+    )->name('banner.status');
 
-// Route::get('/products/create', [ProductController::class, 'create'])
-//     ->name('products.create');
+    // Route::get('/products/create', [ProductController::class, 'create'])
+    //     ->name('products.create');
 
-// Route::post('/products/store', [ProductController::class, 'store'])
-//     ->name('products.store');
+    // Route::post('/products/store', [ProductController::class, 'store'])
+    //     ->name('products.store');
 
-Route::get('product', [ProductController::class, 'index'])->name('products.index');
+    Route::get('product', [ProductController::class, 'index'])->name('products.index');
 
-Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
 
-Route::post('products/store', [ProductController::class, 'store'])->name('products.store');
+    Route::post('products/store', [ProductController::class, 'store'])->name('products.store');
 
-Route::get('products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
-Route::put('products/{id}', [ProductController::class, 'update'])->name('products.update');
-Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+    Route::get('products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
+    Route::put('products/{id}', [ProductController::class, 'update'])->name('products.update');
+    Route::delete('products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
 
-Route::get('products/{id}', [ProductController::class, 'show'])->name('products.show');
+    Route::get('products/{id}', [ProductController::class, 'show'])->name('products.show');
 
     Route::resource('attributes', AttributeController::class);
 
-Route::get('category-attributes', [CategoryAttributeController::class, 'index'])
-    ->name('category.attributes.index');
+    Route::get('category-attributes', [CategoryAttributeController::class, 'index'])
+        ->name('category.attributes.index');
 
-Route::get('category-attributes/create', [CategoryAttributeController::class, 'create'])
-    ->name('category.attributes.create');
+    Route::get('category-attributes/create', [CategoryAttributeController::class, 'create'])
+        ->name('category.attributes.create');
 
-Route::post('category-attributes', [CategoryAttributeController::class, 'store'])
-    ->name('category.attributes.store');
+    Route::post('category-attributes', [CategoryAttributeController::class, 'store'])
+        ->name('category.attributes.store');
 
     Route::get(
-    'products/change-status/{id}',
-    [ProductController::class, 'changeStatus']
-)->name('products.change.status');
+        'products/change-status/{id}',
+        [ProductController::class, 'changeStatus']
+    )->name('products.change.status');
 
 
     Route::post(
-    '/categories/{category}/attributes',
-    [CategoryAttributeController::class, 'storeAttribute']
-)->name('categories.attributes.store');
+        '/categories/{category}/attributes',
+        [CategoryAttributeController::class, 'storeAttribute']
+    )->name('categories.attributes.store');
 
-// Existing attribute mein naya option add karo
-Route::post(
-    '/categories/{category}/attributes/{attribute}/options',
-    [CategoryAttributeController::class, 'storeOption']
-)->name('categories.attributes.options.store');
+    // Existing attribute mein naya option add karo
+    Route::post(
+        '/categories/{category}/attributes/{attribute}/options',
+        [CategoryAttributeController::class, 'storeOption']
+    )->name('categories.attributes.options.store');
 
-Route::delete(
-    '/categories/{category}/attributes/{attribute}',
-    [CategoryAttributeController::class, 'destroyAttribute']
-)->name('categories.attributes.destroy');
+    Route::delete(
+        '/categories/{category}/attributes/{attribute}',
+        [CategoryAttributeController::class, 'destroyAttribute']
+    )->name('categories.attributes.destroy');
 
-Route::get('/category', [CategoryController::class, 'index'])
-    ->name('category.index');
-Route::get('/category/create', [CategoryController::class, 'create'])
-    ->name('category.create');
-Route::post('/category/store', [CategoryController::class, 'store'])
-    ->name('category.store');
-Route::get('/category/edit/{id}', [CategoryController::class, 'edit'])
-    ->name('category.edit');
-Route::put('/category/update/{id}', [CategoryController::class, 'update'])
-    ->name('category.update');
-Route::delete('/category/delete/{id}', [CategoryController::class, 'destroy'])
-    ->name('category.destroy');
-Route::get('/category/status/{id}', [CategoryController::class, 'changeStatus'])
-    ->name('category.status');
+    Route::get('/category', [CategoryController::class, 'index'])
+        ->name('category.index');
+    Route::get('/category/create', [CategoryController::class, 'create'])
+        ->name('category.create');
+    Route::post('/category/store', [CategoryController::class, 'store'])
+        ->name('category.store');
+    Route::get('/category/edit/{id}', [CategoryController::class, 'edit'])
+        ->name('category.edit');
+    Route::put('/category/update/{id}', [CategoryController::class, 'update'])
+        ->name('category.update');
+    Route::delete('/category/delete/{id}', [CategoryController::class, 'destroy'])
+        ->name('category.destroy');
+    Route::get('/category/status/{id}', [CategoryController::class, 'changeStatus'])
+        ->name('category.status');
 });
 
 Route::resource('coupon', CouponController::class);
-Route::get('coupon/change-status/{id}',[CouponController::class, 'changeStatus']
+Route::get(
+    'coupon/change-status/{id}',
+    [CouponController::class, 'changeStatus']
 )->name('coupon.change.status');
+
+
+Route::resource('cod-charges', CodChargeController::class);
+Route::post('cod-charges/{id}/toggle-status', [CodChargeController::class, 'toggleStatus'])->name('cod-charges.toggle-status');
+
 Route::resource('currency', CurrencyController::class);
 Route::post('/currency/status', [CurrencyController::class, 'changeStatus'])->name('currency.status');
+
+// for payment methods
+Route::get('payment-methods', [PaymentMethodController::class, 'index'])->name('admin.payment-methods.index');
+Route::get('payment-methods/create', [PaymentMethodController::class, 'create'])->name('admin.payment-methods.create');
+Route::post('payment-methods', [PaymentMethodController::class, 'store'])->name('admin.payment-methods.store');
+Route::get('payment-methods/{id}/edit', [PaymentMethodController::class, 'edit'])->name('admin.payment-methods.edit');
+Route::put('payment-methods/{id}', [PaymentMethodController::class, 'update'])->name('admin.payment-methods.update');
+Route::post('payment-methods/{id}/toggle', [PaymentMethodController::class, 'toggleStatus'])->name('admin.payment-methods.toggle');
 
 Route::controller(AuthController::class)->group(function () {
 
@@ -124,4 +141,3 @@ Route::controller(AuthController::class)->group(function () {
     Route::get('/reset', 'reset')->name('reset');
     Route::post('/reset-password', 'update_password')->name('reset_password');
 });
-
