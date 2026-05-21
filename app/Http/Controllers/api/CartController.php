@@ -31,28 +31,23 @@ class CartController extends Controller
     }
 
     // -----------------------------------------------------------------------
-    // GET /api/cart
     // View all items in cart
     // -----------------------------------------------------------------------
     public function index(): JsonResponse
     {
-        $cart = $this->getCart();
+        $cart = $this->getCart(); // Your existing method
+
+        $cart->load(['items.product', 'items.variant.attributeOptions.attribute']);
 
         return response()->json([
             'success' => true,
             'message' => 'Cart retrieved successfully',
-            'data'    => new CartResource($cart),
+            'data' => new CartResource($cart),
         ]);
     }
 
     // -----------------------------------------------------------------------
-    // POST /api/cart/add
-    // Add a product (with optional variant) to cart
-    //
-    // Body:
-    //   product_id  (required)
-    //   variant_id  (optional)
-    //   quantity    (optional, default 1)
+    // cart/add
     // -----------------------------------------------------------------------
     public function add(Request $request): JsonResponse
     {
@@ -131,7 +126,6 @@ class CartController extends Controller
     }
 
     // -----------------------------------------------------------------------
-    // PATCH /api/cart/items/{cartItemId}/increase
     // Increase quantity by 1 (or by ?step=N)
     // -----------------------------------------------------------------------
     public function increase(Request $request, int $cartItemId): JsonResponse
@@ -167,7 +161,6 @@ class CartController extends Controller
     }
 
     // -----------------------------------------------------------------------
-    // PATCH /api/cart/items/{cartItemId}/decrease
     // Decrease quantity by 1 (or by ?step=N). Removes item if qty reaches 0.
     // -----------------------------------------------------------------------
     public function decrease(Request $request, int $cartItemId): JsonResponse
@@ -207,12 +200,7 @@ class CartController extends Controller
     }
 
     // -----------------------------------------------------------------------
-    // PUT /api/cart/items/{cartItemId}
     // Update cart item: change quantity AND/OR switch to a different variant
-    //
-    // Body:
-    //   quantity   (optional)
-    //   variant_id (optional) — switch variant (must belong to same product)
     // -----------------------------------------------------------------------
     public function update(Request $request, int $cartItemId): JsonResponse
     {
@@ -222,8 +210,9 @@ class CartController extends Controller
         ]);
 
         $item = $this->findOwnedItem($cartItemId);
+        $mergedItem = null;
 
-        DB::transaction(function () use ($request, $item) {
+        DB::transaction(function () use ($request, $item, &$mergedItem) {
             $newVariantId = $request->has('variant_id') ? $request->variant_id : $item->variant_id;
             $newQty       = $request->quantity ?? $item->quantity;
 
@@ -253,33 +242,66 @@ class CartController extends Controller
                     // Merge into existing item
                     $conflict->update(['quantity' => $conflict->quantity + $newQty]);
                     $item->delete();
-                    $item = $conflict; // for response
+                    $mergedItem = $conflict;
                     return;
                 }
             }
 
-            $item->update([
-                'variant_id' => $newVariantId,
-                'quantity'   => $newQty,
-            ]);
+            // Update variant prices if variant changed
+            if ($newVariantId && $newVariantId !== $item->variant_id && $newVariant) {
+                $item->update([
+                    'variant_id' => $newVariantId,
+                    'quantity'   => $newQty,
+                    'unit_price' => $newVariant->price,
+                    'discount_price' => $newVariant->discount_price ?? $newVariant->price,
+                ]);
+            } else {
+                $item->update([
+                    'variant_id' => $newVariantId,
+                    'quantity'   => $newQty,
+                ]);
+            }
         });
 
-        // Reload fresh (item may have been replaced by merged conflict)
-        $item->refresh();
-        $item->load(['product', 'variant.attributeOptions.attribute', 'variant.images']);
+        // Get the final item (either updated or merged)
+        $finalItem = $mergedItem ?? $item;
+        $finalItem->refresh();
+
+        // Load relationships for the final item
+        $finalItem->load([
+            'product' => function ($query) {
+                $query->with([
+                    'variants.attributeOptions.attribute',
+                    'variants.images',
+                    'category'
+                ]);
+            },
+            'variant.attributeOptions.attribute',
+            'variant.images',
+        ]);
+
+        // Get the complete cart
+        $cart = $finalItem->cart;
+        $cart->load([
+            'items.product' => function ($query) {
+                $query->with([
+                    'variants.attributeOptions.attribute',
+                    'variants.images',
+                    'category'
+                ]);
+            },
+            'items.variant.attributeOptions.attribute',
+            'items.variant.images',
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Cart item updated',
-            'data'    => [
-                'item'         => new CartItemResource($item),
-                'cart_summary' => $this->cartSummary($item->cart_id),
-            ],
+            'message' => $mergedItem ? 'Item merged with existing cart item' : 'Cart item updated successfully',
+            'data' => new CartResource($cart),
         ]);
     }
 
     // -----------------------------------------------------------------------
-    // DELETE /api/cart/items/{cartItemId}
     // Remove a specific item from cart
     // -----------------------------------------------------------------------
     public function remove(int $cartItemId): JsonResponse
@@ -299,7 +321,6 @@ class CartController extends Controller
     }
 
     // -----------------------------------------------------------------------
-    // DELETE /api/cart/clear
     // Remove ALL items from cart
     // -----------------------------------------------------------------------
     public function clear(): JsonResponse
@@ -326,7 +347,6 @@ class CartController extends Controller
     }
 
     // -----------------------------------------------------------------------
-    // GET /api/cart/count
     // Quick count endpoint (for cart badge in app header)
     // -----------------------------------------------------------------------
     public function count(): JsonResponse

@@ -10,20 +10,22 @@ class CartResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'      => $this->id,
-            'user_id' => $this->user_id,
+            'cart' => [
+                'id' => (string) $this->id,
+                'user_id' => (string) $this->user_id,
 
-            'items' => CartItemResource::collection($this->items),
+                'items' => CartItemResource::collection($this->whenLoaded('items')),
 
-            'summary' => [
-                'total_items'    => $this->items->count(),       // distinct line items
-                'total_quantity' => $this->total_quantity,       // sum of all quantities
-                'subtotal'       => number_format($this->total_price, 2, '.', ''),
-                'total_discount' => number_format($this->total_discount, 2, '.', ''),
-                'payable_amount' => number_format($this->payable_amount, 2, '.', ''),
-            ],
+                'summary' => [
+                    'total_items' => (int) $this->total_quantity,      // sum of all quantities
+                    'unique_products' => (int) $this->items->count(),  // distinct line items
+                    'subtotal' => number_format($this->total_price, 2, '.', ''),
+                    'total_discount' => number_format($this->total_discount, 2, '.', ''),
+                    'payable_amount' => number_format($this->payable_amount, 2, '.', ''),
+                ],
 
-            'updated_at' => $this->updated_at,
+                'updated_at' => $this->updated_at?->toISOString(),
+            ]
         ];
     }
 }

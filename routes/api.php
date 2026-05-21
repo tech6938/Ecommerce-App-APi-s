@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\Api\AddressController;
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\CartController;
 use App\Http\Controllers\api\OtpController;
@@ -72,6 +73,19 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/decrease', 'decrease');
             Route::delete('/remove', 'remove');
         });
+    });
+
+    Route::controller(AddressController::class)->prefix('addresses')->group(function () {
+        // Resource routes
+        Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::get('/{id}', 'show');
+        Route::post('/{id}', 'update');
+        Route::delete('/{id}', 'destroy');
+
+        // Custom routes
+        Route::get('/default/show', 'getDefault');
+        Route::post('/{id}/default', 'setDefault');
     });
 
     Route::controller(RatingController::class)->group(function () {
