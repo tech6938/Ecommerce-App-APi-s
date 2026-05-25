@@ -151,8 +151,8 @@ class AuthController extends Controller
 
         // Find user by phone
         $user = User::where('phone', $request->phone)
-                    ->where('user_type', 'registered')
-                    ->first();
+            ->where('user_type', 'registered')
+            ->first();
 
         if (!$user) {
             return response()->json([
@@ -381,6 +381,55 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Logged out successfully'
+        ], 200);
+    }
+
+    /**
+     * Change user password
+     */
+    public function changePassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'current_password' => 'required|string',
+            'new_password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = auth()->user();
+
+        // Check if current password matches
+        if (!Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Current password is incorrect'
+            ], 401);
+        }
+
+        // Check if new password is same as current password
+        if (Hash::check($request->new_password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'New password cannot be the same as current password'
+            ], 422);
+        }
+
+        // Update password
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        // Optional: Revoke all tokens and ask user to login again
+        // $user->tokens()->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password changed successfully'
         ], 200);
     }
 

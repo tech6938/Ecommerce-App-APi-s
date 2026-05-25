@@ -22,6 +22,7 @@ class PaymentMethodController extends Controller
             'success' => true,
             'message' => 'COD payment method retrieved successfully',
             'data' => [
+                'id' => $cod->id,
                 'is_active' => (bool) $cod->is_active,
                 'name' => $cod->name,
                 'type' => $cod->code,

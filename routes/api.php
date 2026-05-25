@@ -1,9 +1,10 @@
 <?php
 
 
-use App\Http\Controllers\Api\AddressController;
+use App\Http\Controllers\api\AddressController;
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\CartController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\api\OtpController;
 use App\Http\Controllers\api\PasswordResetController;
 use App\Http\Controllers\api\PaymentMethodController;
@@ -42,9 +43,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::post('/logout', 'logout');
         Route::post('/convert-guest', 'convertGuestToRegistered');
-        Route::post('/fcm_token', 'fcm_token');
         Route::get('/profile', 'getProfile');
         Route::post('/update/profile', 'updateProfile');
+        Route::post('/change-password', 'changePassword');
+        Route::post('/fcm_token', 'fcm_token');
     });
 
     //
@@ -106,12 +108,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/products/{productId}/ratings', 'productRatings');
     });
 
-    Route::prefix('payment-methods')->group(function () {
-        Route::get('/', [PaymentMethodController::class, 'index']);
-        Route::get('/cod', [PaymentMethodController::class, 'getCOD']);
-        Route::get('/online', [PaymentMethodController::class, 'getOnlineMethods']);
-        Route::get('/{code}', [PaymentMethodController::class, 'show']);
-        Route::get('/{code}/credentials', [PaymentMethodController::class, 'getCredentials']);
+    Route::prefix('orders')->controller(OrderController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::get('/summary', 'summary');
+        Route::get('/{id}', 'show');
+        Route::post('/{id}/cancel', 'cancel');
+    });
+
+    Route::prefix('payment-methods')->controller(PaymentMethodController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/cod', 'getCOD');
+        Route::get('/online', 'getOnlineMethods');
+        Route::get('/{code}', 'show');
+        Route::get('/{code}/credentials', 'getCredentials');
     });
 
     Route::post('/upload', [UploadController::class, 'upload']);
