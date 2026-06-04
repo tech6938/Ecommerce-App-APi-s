@@ -150,7 +150,19 @@
                                 <span>COD Charges</span>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="nav-link" href="{{ route('cod-charges.index') }}">COD Charge List</a></li>
+                                <li><a class="nav-link" href="{{ route('cod-charges.index') }}">COD Charge List</a>
+                                </li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown {{ request()->routeIs('admin.chat.*') ? 'active' : '' }}">
+                            <a href="#" class="menu-toggle nav-link has-dropdown">
+                               <i data-feather="message-square"></i>
+                                <span>Chat</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="nav-link" href="{{ route('admin.chat.index') }}">Chat</a>
+                                </li>
                             </ul>
                         </li>
                         {{-- <li class="dropdown

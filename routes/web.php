@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\AttributeController;
+use App\Http\Controllers\ChatController as AdminChatController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CategoryAttributeController;
@@ -112,6 +113,13 @@ Route::post('cod-charges/{id}/toggle-status', [CodChargeController::class, 'togg
 
 Route::resource('currency', CurrencyController::class);
 Route::post('/currency/status', [CurrencyController::class, 'changeStatus'])->name('currency.status');
+
+Route::prefix('admin')->middleware([AuthMiddleware::class])->group(function () {
+    Route::get('/chat', [AdminChatController::class, 'index'])->name('admin.chat.index');
+    Route::get('/chat/{conversationId}', [AdminChatController::class, 'show'])->name('admin.chat.show');
+    Route::post('/chat/{conversationId}/send', [AdminChatController::class, 'sendMessage'])->name('admin.chat.send');
+    Route::post('/chat/{conversationId}/close', [AdminChatController::class, 'close'])->name('admin.chat.close');
+});
 
 // for payment methods
 Route::get('payment-methods', [PaymentMethodController::class, 'index'])->name('admin.payment-methods.index');
