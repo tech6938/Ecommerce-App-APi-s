@@ -10,6 +10,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CodChargeController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CurrencyController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SystemSettingController;
 use App\Http\Middleware\AuthMiddleware;
@@ -99,6 +100,10 @@ Route::middleware([AuthMiddleware::class])->group(function () {
         ->name('category.destroy');
     Route::get('/category/status/{id}', [CategoryController::class, 'changeStatus'])
         ->name('category.status');
+
+    Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('orders/{order}/status', [OrderController::class, 'updateStatus'])->name('orders.update.status');
 });
 
 Route::resource('coupon', CouponController::class);

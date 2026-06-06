@@ -144,4 +144,19 @@ class Order extends Model
 
         return $badges[$this->order_status] ?? 'secondary';
     }
+
+    public static function generateTrackingNumber()
+    {
+        $prefix = 'TRK';
+        $date = now()->format('Ymd');
+        $random = Str::upper(Str::random(6));
+        $tracking = "$prefix-$date-$random";
+
+        while (static::where('tracking_number', $tracking)->exists()) {
+            $random = Str::upper(Str::random(6));
+            $tracking = "$prefix-$date-$random";
+        }
+
+        return $tracking;
+    }
 }

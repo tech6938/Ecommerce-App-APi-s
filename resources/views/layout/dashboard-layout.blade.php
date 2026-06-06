@@ -124,6 +124,16 @@
                             </ul>
                         </li>
 
+                        <li class="dropdown {{ request()->routeIs('orders.*') ? 'active' : '' }}">
+                            <a href="#" class="menu-toggle nav-link has-dropdown">
+                                <i data-feather="shopping-cart"></i>
+                                <span>Orders</span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="nav-link" href="{{ route('orders.index') }}">Order List</a></li>
+                            </ul>
+                        </li>
+
                         <li class="dropdown {{ request()->routeIs('currency.*') ? 'active' : '' }}">
                             <a href="#" class="menu-toggle nav-link has-dropdown">
                                 <i data-feather="dollar-sign"></i>
