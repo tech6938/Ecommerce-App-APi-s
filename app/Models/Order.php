@@ -23,6 +23,8 @@ class Order extends Model
         'coupon_code',
         'coupon_discount',
         'payment_status',
+        'request_id',
+        'reference_code',
         'payment_transaction_id',
         'order_status',
         'tracking_number',

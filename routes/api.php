@@ -5,7 +5,11 @@ use App\Http\Controllers\api\AddressController;
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\CartController;
 use App\Http\Controllers\api\ChatController;
+<<<<<<< HEAD
 use App\Http\Controllers\Api\OrderController;
+=======
+use App\Http\Controllers\api\OrderController;
+>>>>>>> ddec080 (Fixed currency management from and panel and also in api)
 use App\Http\Controllers\api\OtpController;
 use App\Http\Controllers\api\PasswordResetController;
 use App\Http\Controllers\api\PaymentMethodController;
@@ -123,6 +127,21 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/online', 'getOnlineMethods');
         Route::get('/{code}', 'show');
         Route::get('/{code}/credentials', 'getCredentials');
+        Route::post('/payment-tracking/{orderId}', 'paymentTracking');
+    });
+
+    // Customer routes
+    Route::post('/start', [ChatController::class, 'startConversation']);
+    Route::get('/conversations', [ChatController::class, 'getConversations']);
+    Route::get('/unread-count', [ChatController::class, 'getUnreadCount']);
+
+    // Conversation specific routes
+    Route::prefix('{conversationId}')->group(function () {
+        Route::get('/messages', [ChatController::class, 'getMessages']);
+        Route::post('/send', [ChatController::class, 'sendMessage']);
+        Route::post('/typing', [ChatController::class, 'sendTyping']);
+        Route::post('/read', [ChatController::class, 'markAsRead']);
+        Route::post('/close', [ChatController::class, 'closeConversation']);
     });
 
     // Customer routes

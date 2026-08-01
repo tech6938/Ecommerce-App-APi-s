@@ -16,7 +16,6 @@ class Product extends Model
         'thumbnail',
         'status',
         'price',
-        'currency',
         'discount_price',
         'specifications',
     ];
@@ -41,6 +40,24 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function getCurrencyAttribute($value): string
+    {
+        $currency = Currency::current();
+
+        if (!$currency) {
+            return '$';
+        }
+
+        return $currency->symbol
+            ?: $currency->currency_code
+            ?: '$';
+    }
+
+    public function currencyModel(): ?Currency
+    {
+        return Currency::current();
     }
 
     public function variants()

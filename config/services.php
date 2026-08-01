@@ -41,4 +41,15 @@ return [
         'from'  => env('TWILIO_PHONE'),
     ],
 
+    'nita' => [
+        'api_key' => 'sWwFI9Y86LG29sZeh4VoqC_d_AmG_lGQvF8OROZ_7q0',
+        'username' => 'ABDOUL_KGB',
+        'password' => 'KGB_XPRESS@2026',
+        'authenticate_url' => 'https://sandbox.nitapiservices.com/api/authenticate',
+        'check_status_url' => 'https://sandbox.nitapiservices.com/api/nitaServices/achatEnLigne/checkAchatStatus',
+        'long_transaction' => '2.0301',
+        'lat_transaction' => '13.5123',
+        'ip_address' => '127.0.0.1',
+    ],
+
 ];

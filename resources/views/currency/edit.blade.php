@@ -31,6 +31,19 @@
                             <input type="text" name="symbol" value="{{ $currency->symbol }}" class="form-control">
                         </div>
 
+                        <div class="form-group">
+                            <label>Symbol Position</label>
+                            <select name="symbol_position" class="form-control">
+                                <option value="before" {{ ($currency->symbol_position ?? 'before') == 'before' ? 'selected' : '' }}>
+                                    Before Amount (e.g., $100)
+                                </option>
+                                <option value="after" {{ ($currency->symbol_position ?? 'before') == 'after' ? 'selected' : '' }}>
+                                    After Amount (e.g., 100 F CFA)
+                                </option>
+                            </select>
+                            <small class="form-text text-muted">Choose where the currency symbol should appear</small>
+                        </div>
+
                     </div>
 
                     <div class="card-footer text-right">

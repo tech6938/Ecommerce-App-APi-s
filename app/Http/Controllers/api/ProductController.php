@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductDetailsResource;
 use App\Http\Resources\ProductResource;
+use App\Models\Currency;
 use App\Models\Banner;
 use App\Models\Category;
 use App\Models\CodCharge;
@@ -244,6 +245,7 @@ class ProductController extends Controller
         ]);
 
         $searchTerm = $request->q;
+        $currency = Currency::current();
 
         $products = Product::where('status', 'active')
             ->where(function ($query) use ($searchTerm) {
@@ -260,6 +262,7 @@ class ProductController extends Controller
         return response()->json([
             'success' => true,
             'data' => $products->map(function ($product) {
+                $currency = Currency::current();
                 return [
                     'id' => $product->id,
                     'title' => $product->title,
@@ -267,6 +270,8 @@ class ProductController extends Controller
                     'thumbnail' => $product->thumbnail ? url($product->thumbnail) : null,
                     'price' => (float) $product->price,
                     'discount_price' => $product->discount_price ? (float) $product->discount_price : null,
+                    'currency' => $currency?->symbol ?: $currency?->currency_code ?: '$',
+                    'currency_position' => $currency?->symbol_position,
                 ];
             })
         ]);
@@ -351,6 +356,7 @@ class ProductController extends Controller
         ]);
 
         $searchTerm = $request->q;
+        $currency = Currency::current();
 
         $products = Product::whereHas('likes', function ($q) use ($userId) {
             $q->where('user_id', $userId)->where('is_like', true);
@@ -374,7 +380,7 @@ class ProductController extends Controller
             'data' => [
                 'search_term' => $searchTerm,
                 'total_results' => $products->count(),
-                'products' => $products->map(function ($product) {
+                'products' => $products->map(function ($product) use ($currency) {
                     return [
                         'id' => $product->id,
                         'title' => $product->title,
@@ -383,6 +389,8 @@ class ProductController extends Controller
                         'thumbnail' => $product->thumbnail ? url($product->thumbnail) : null,
                         'price' => (float) $product->price,
                         'discount_price' => $product->discount_price ? (float) $product->discount_price : null,
+                        'currency' => $currency?->symbol ?: $currency?->currency_code ?: '$',
+                        'currency_position' => $currency?->symbol_position,
                     ];
                 })
             ]

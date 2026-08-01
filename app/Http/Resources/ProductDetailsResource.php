@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Currency;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Collection;
@@ -13,6 +14,7 @@ class ProductDetailsResource extends JsonResource
     {
         $variants = $this->whenLoaded('variants', fn () => $this->variants, collect());
         $selectors = $this->buildSelectors($variants);
+        $currency = Currency::current();
 
         return [
             'product' => [
@@ -24,7 +26,8 @@ class ProductDetailsResource extends JsonResource
                     'id' => (string) $this->category->id,
                     'name' => $this->category->title,
                 ] : null,
-                'currency' => $this->currency ?? '$',
+                'currency' => $currency?->symbol ?: $currency?->currency_code ?: '$',
+                'currency_position' => $currency?->symbol_position ?? 'before',
                 'rating' => [
                     'average' => (float) $this->average_rating,
                     'count' => (int) $this->total_reviews,

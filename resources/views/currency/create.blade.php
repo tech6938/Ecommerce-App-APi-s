@@ -36,8 +36,21 @@
                         <!-- Symbol -->
                         <div class="form-group">
                             <label>Symbol</label>
-                            <input type="text" name="symbol" class="form-control" placeholder="₨, $">
+                            <input type="text" name="symbol" class="form-control" placeholder="₨, $, F CFA">
                             @error('symbol')
+                                <div class="text-danger">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <!-- Symbol Position -->
+                        <div class="form-group">
+                            <label>Symbol Position <span class="text-danger">*</span></label>
+                            <select name="symbol_position" class="form-control">
+                                <option value="before">Before Amount (e.g., $100)</option>
+                                <option value="after">After Amount (e.g., 100 F CFA)</option>
+                            </select>
+                            <small class="form-text text-muted">Choose where the currency symbol should appear</small>
+                            @error('symbol_position')
                                 <div class="text-danger">{{ $message }}</div>
                             @enderror
                         </div>

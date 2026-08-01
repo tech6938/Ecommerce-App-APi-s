@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Currency;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Str;
@@ -12,6 +13,7 @@ class CartItemResource extends JsonResource
     {
         $product = $this->whenLoaded('product');
         $variant = $this->whenLoaded('variant');
+        $currency = Currency::current();
 
         // Get prices
         $originalPrice = (float) $this->unit_price;
@@ -37,7 +39,8 @@ class CartItemResource extends JsonResource
                     'id' => (string) $product->category->id,
                     'name' => $product->category->title,
                 ] : null,
-                'currency' => $product->currency ?? '$',
+                'currency' => $currency?->symbol ?: $currency?->currency_code ?: '$',
+                'currency_position' => $currency?->symbol_position ?? 'before',
                 'rating' => [
                     'average' => (float) ($product->average_rating ?? 0),
                     'count' => (int) ($product->total_reviews ?? 0),

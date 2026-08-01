@@ -18,9 +18,16 @@ use Illuminate\Support\Facades\Route;
 
 
 
+Route::get('/migrate', function () {
+    Artisan::call('migrate');
+});
 
-
-
+Route::get('/ref-code-cronjob', function () {
+    // dd(config('services.nita'));
+    Artisan::call('nita:sync-payment-status', [
+        '--limit' => 10,
+    ]);
+});
 
 // dash
 Route::middleware([AuthMiddleware::class])->group(function () {

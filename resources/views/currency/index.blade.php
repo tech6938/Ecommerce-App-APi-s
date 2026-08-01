@@ -40,6 +40,7 @@
                                     <th>Name</th>
                                     <th>Code</th>
                                     <th>Symbol</th>
+                                    <th>Display Preview</th>
                                     <th>Status</th>
                                     <th>Action</th>
                                 </tr>
@@ -62,6 +63,16 @@
                                     </td>
 
                                     <td>{{ $data->symbol ?? '--' }}</td>
+
+                                    {{-- DISPLAY PREVIEW --}}
+                                    <td>
+                                        @php
+                                            $symbol = $data->symbol ?: $data->currency_code;
+                                            $position = $data->symbol_position ?? 'before';
+                                            $preview = $position === 'after' ? '100 ' . $symbol : $symbol . ' 100';
+                                        @endphp
+                                        <span class="badge badge-info">{{ $preview }}</span>
+                                    </td>
 
                                     {{-- STATUS (LIKE YOUR IMAGE) --}}
                                     <td>
@@ -126,7 +137,7 @@
                                 @empty
 
                                 <tr>
-                                    <td colspan="6" class="text-center">
+                                    <td colspan="7" class="text-center">
                                         No Currency Found
                                     </td>
                                 </tr>

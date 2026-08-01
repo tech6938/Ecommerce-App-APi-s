@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Currency;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,6 +15,8 @@ class ProductResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $currency = Currency::current();
+
         return [
             'id' => $this->id,
             'category_id' => $this->category_id,
@@ -23,7 +26,8 @@ class ProductResource extends JsonResource
             'status' => $this->status,
             'price' => $this->price ?? '0.0',
             'discount_price' => $this->discount_price ?? '0.0',
-            'currency' => $this->currency ?? '$',
+            'currency' => $currency?->symbol ?: $currency?->currency_code ?: '$',
+            'currency_position' => $currency?->symbol_position ?? 'before',
 
             // Rating information
             'rating' => (float) $this->average_rating,

@@ -22,6 +22,7 @@ class CurrencyController extends Controller
         $request->validate([
             'currency_name' => 'required',
             'currency_code' => 'required|unique:currencies,currency_code',
+            'symbol_position' => 'required|in:before,after',
         ]);
 
         Currency::create($request->all());
@@ -43,6 +44,7 @@ class CurrencyController extends Controller
         $request->validate([
             'currency_name' => 'required',
             'currency_code' => 'required|unique:currencies,currency_code,' . $id,
+            'symbol_position' => 'required|in:before,after',
         ]);
 
         $currency->update($request->all());
